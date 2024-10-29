@@ -6,6 +6,10 @@ package main;
 
 import java.awt.event.KeyEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,17 +25,27 @@ import koneksi.Koneksi;
  */
 public class TambahProduk extends javax.swing.JDialog {
 
+    String folderName = ".kelasA";
+    String logFile = "log.txt";
+    String home = System.getProperty("user.home");
+    String folder = home + File.separator + folderName;
+    String logPath = folder + File.separator + logFile;
+
+    
     /**
      * Creates new form TambahProduk
      */
     public TambahProduk(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
-        
+
         viewCategory("product_category", jComboBox1);
         viewCategory("supplier", jComboBox2);
-        
+
         generateProductCode();
+
+        createLogFile();
+
     }
 
     /**
@@ -149,6 +163,11 @@ public class TambahProduk extends javax.swing.JDialog {
         });
 
         jButton2.setText("SIMPAN");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -261,17 +280,17 @@ public class TambahProduk extends javax.swing.JDialog {
         // TODO add your handling code here:
         JFileChooser jfc = new JFileChooser();
         jfc.setDialogTitle("Pilih Gambar Produk");
-                
-                // Show the dialog and get the user's selection
-                int userSelection = jfc.showOpenDialog(this);
-                
-                if (userSelection == JFileChooser.APPROVE_OPTION) {
-                    File fileToOpen = jfc.getSelectedFile();
-                    JOptionPane.showMessageDialog(this, "Selected file: " + fileToOpen.getAbsolutePath());
-                } else {
-                    JOptionPane.showMessageDialog(this, "Open command canceled");
-                }
-        
+
+        // Show the dialog and get the user's selection
+        int userSelection = jfc.showOpenDialog(this);
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToOpen = jfc.getSelectedFile();
+            JOptionPane.showMessageDialog(this, "Selected file: " + fileToOpen.getAbsolutePath());
+        } else {
+            JOptionPane.showMessageDialog(this, "Open command canceled");
+        }
+
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jComboBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox2ActionPerformed
@@ -290,6 +309,15 @@ public class TambahProduk extends javax.swing.JDialog {
     private void jTextField8KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyTyped
         checkInput(evt);
     }//GEN-LAST:event_jTextField8KeyTyped
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        String pName = jTextField2.getText();
+
+        appendText("\n"+pName);
+
+
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -356,24 +384,24 @@ public class TambahProduk extends javax.swing.JDialog {
     private javax.swing.JTextField jTextField8;
     // End of variables declaration//GEN-END:variables
 
-private void viewCategory(String tableName, JComboBox cmb){
-    try {
-        cmb.removeAllItems();
-        Connection K = Koneksi.hubungkan();
-        Statement S = K.createStatement();
-        String Q = "SELECT * FROM "+tableName;
-        ResultSet R = S.executeQuery(Q);
-        while (R.next()) {                 
-            int id = R.getInt("id");                 	 	 	 	 	 	 	 	
-            String name = R.getString("name");
-            cmb.addItem(id+"-"+name);                 
+    private void viewCategory(String tableName, JComboBox cmb) {
+        try {
+            cmb.removeAllItems();
+            Connection K = Koneksi.hubungkan();
+            Statement S = K.createStatement();
+            String Q = "SELECT * FROM " + tableName;
+            ResultSet R = S.executeQuery(Q);
+            while (R.next()) {
+                int id = R.getInt("id");
+                String name = R.getString("name");
+                cmb.addItem(id + "-" + name);
+            }
+            int hargaJual = Integer.parseInt(jTextField6.getText());
+
+        } catch (StringIndexOutOfBoundsException | NumberFormatException | SQLException e) {
+            System.err.println("ErrorCode: 1123" + e.getMessage());
         }
-        int hargaJual = Integer.parseInt(jTextField6.getText());
-        
-    } catch (StringIndexOutOfBoundsException | NumberFormatException | SQLException e) {
-        System.err.println("ErrorCode: 1123"+e.getMessage());
     }
-}
 //private void viewSupplier(){
 //    try {
 //        jComboBox2.removeAllItems();
@@ -409,7 +437,7 @@ private void viewCategory(String tableName, JComboBox cmb){
 
     private void checkInput(KeyEvent evt) {
         char c = evt.getKeyChar();
-        if(!Character.isDigit(c)){
+        if (!Character.isDigit(c)) {
             evt.consume();
         }
     }
@@ -419,18 +447,18 @@ private void viewCategory(String tableName, JComboBox cmb){
         try {
             String pcode = "";
             int lastnumber = getLastProductNumber();
-            if(lastnumber < 10){
-                pcode = "P0000"+lastnumber;
-            }else if(lastnumber >9 && lastnumber < 100){
-                pcode = "P000"+lastnumber;
-            }else if(lastnumber >99 && lastnumber < 1000){
-                pcode = "P00"+lastnumber;
-            }else if(lastnumber >999 && lastnumber < 10000){
-                pcode = "P0"+lastnumber;
-            }else if(lastnumber >9999 && lastnumber < 100000){
-                pcode = "P"+lastnumber;
+            if (lastnumber < 10) {
+                pcode = "P0000" + lastnumber;
+            } else if (lastnumber > 9 && lastnumber < 100) {
+                pcode = "P000" + lastnumber;
+            } else if (lastnumber > 99 && lastnumber < 1000) {
+                pcode = "P00" + lastnumber;
+            } else if (lastnumber > 999 && lastnumber < 10000) {
+                pcode = "P0" + lastnumber;
+            } else if (lastnumber > 9999 && lastnumber < 100000) {
+                pcode = "P" + lastnumber;
             }
-            jTextField1.setText(pcode); 
+            jTextField1.setText(pcode);
         } catch (Exception e) {
             //
         }
@@ -440,29 +468,58 @@ private void viewCategory(String tableName, JComboBox cmb){
         try {
             Connection K = Koneksi.hubungkan();
             Statement S = K.createStatement();
-            String Q = "SELECT `product_code` FROM products ORDER BY `id` DESC LIMIT 1";
+            String Q = "SELECT `product_code` FROM productsss ORDER BY `id` DESC LIMIT 1";
             ResultSet R = S.executeQuery(Q);
             int n = 0;
             String code = "";
-            while (R.next()) {                 
+            while (R.next()) {
                 code = R.getString("product_code");
                 n++;
             }
-            
-            if(n > 0){
+
+            if (n > 0) {
                 //P00001
                 String k = code.substring(1, 6);
                 int num = Integer.parseInt(k);
 //                System.out.println(k);
 //                System.out.println(num);
-            return num+1;
-            }else {
-                
+                return num + 1;
+            } else {
+
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException | SQLException e) {
+            appendText(e.getMessage()); 
         }
         return 0;
     }
 
+    private void createLogFile() {
+        try {
+            File f = new File(folder);
+            if (!f.exists()) {
+                f.mkdir();
+            }
+
+            File f2 = new File(logPath);
+            if (!f2.exists()) {
+                f2.createNewFile();
+            }
+        } catch (IOException e) {
+            //error handling
+            appendText("\n"+e.getMessage()); 
+        }
+
+    }
+
+    private void appendText(String text) {
+        try {
+            Files.write(
+                Paths.get(logPath),
+                text.getBytes(),
+                StandardOpenOption.APPEND
+            );
+        } catch (IOException e) {            
+        }
+    }
 
 }
