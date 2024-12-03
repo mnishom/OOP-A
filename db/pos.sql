@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 25, 2024 at 12:45 PM
--- Server version: 10.4.27-MariaDB
--- PHP Version: 7.4.33
+-- Generation Time: Dec 03, 2024 at 04:28 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `products` (
   `id` int(11) NOT NULL,
-  `product_code` varchar(15) NOT NULL,
+  `product_code` varchar(50) NOT NULL,
   `product_name` varchar(60) NOT NULL,
   `product_image` varchar(50) NOT NULL,
   `product_category` int(11) NOT NULL,
@@ -44,7 +44,14 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `product_code`, `product_name`, `product_image`, `product_category`, `product_supplier`, `product_price_s`, `product_price_b`, `product_stock`) VALUES
-(3, 'P00002', 'Kulkas 3 Pintu', 'h', 1, 1, 5000000, 4000000, 50);
+(4, 'P00001', 'Printer', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 5000000, 4000000, 50),
+(5, 'P00002', 'Laptop Dell', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 7500000, 5000000, 30),
+(6, 'P00003', 'dsfdsfdssdfdsf', 'fdsfdsfdsfdsfds', 1, 2, 555, 5555, 5),
+(7, 'P00004', 'AC Daikin', 'C:\\Users\\LABKOM\\Pictures\\Save-as-icon.png', 1, 2, 3000000, 2500000, 15),
+(8, 'P00005', 'Mesin Cuci 2 tabung', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 6000000, 5000000, 50),
+(9, 'P00006', 'Printer 3D', 'C:\\Users\\LABKOM\\Pictures\\Capture.PNG', 1, 2, 5000000, 450000, 5),
+(10, 'P00007', 'Blender X', 'C:\\Users\\LABKOM\\Pictures\\bgsplash.PNG', 1, 2, 750000, 500000, 5),
+(11, '4970129727514', 'SNOWMAN', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 7500, 5000, 50);
 
 -- --------------------------------------------------------
 
@@ -108,7 +115,12 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `fullname`, `username`, `password`, `level`) VALUES
 (1, 'SEKAR QYNASIH INGGIL ARDINSYAH', 'sena', '1234', 'admin'),
-(2, 'AHMAT FAUZI', 'fauzi', '123', 'kasir');
+(2, 'AHMAT FAUZI', 'fauzi', '123', 'kasir'),
+(16, 'fahmi', 'fahmi', '1234', 'owner'),
+(17, 'fahmi', 'fahmi2', '1234', 'owner'),
+(18, 'fahmi', 'fahmi3', '1234', 'owner'),
+(19, 'sena2', 'sena2', '1234', 'kasir'),
+(20, 'A', 'A', 'A', 'admin');
 
 --
 -- Indexes for dumped tables
@@ -148,7 +160,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `product_category`
@@ -166,7 +178,7 @@ ALTER TABLE `supplier`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- Constraints for dumped tables
