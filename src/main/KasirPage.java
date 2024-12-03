@@ -4,6 +4,13 @@
  */
 package main;
 
+import java.sql.Connection;
+import java.sql.Statement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import javax.swing.table.DefaultTableModel;
+import koneksi.Koneksi;
+
 /**
  *
  * @author LABKOM
@@ -31,12 +38,17 @@ public class KasirPage extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jPanel4 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Kasir Page");
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
 
         jLabel1.setText("Produk");
 
@@ -75,23 +87,6 @@ public class KasirPage extends javax.swing.JFrame {
         );
 
         getContentPane().add(jPanel2, java.awt.BorderLayout.PAGE_END);
-
-        jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setPreferredSize(new java.awt.Dimension(250, 261));
-
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 250, Short.MAX_VALUE)
-        );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 461, Short.MAX_VALUE)
-        );
-
-        jScrollPane1.setViewportView(jPanel4);
-
         getContentPane().add(jScrollPane1, java.awt.BorderLayout.LINE_END);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
@@ -99,7 +94,7 @@ public class KasirPage extends javax.swing.JFrame {
 
             },
             new String [] {
-                "ID", "NAMA PRODUK", "QTY", "HARGA"
+                "KODE", "NAMA PRODUK", "QTY", "HARGA"
             }
         ));
         jScrollPane2.setViewportView(jTable1);
@@ -108,6 +103,64 @@ public class KasirPage extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        String kode = jTextField1.getText();
+
+        Product P = searchByPCode(kode);
+        if (P == null) {
+            //berikan pesan bahwa produk tidak ditemukan
+        } else {
+            //tambahkan ke keranjang belanja
+            //cek apakah produk sudah ada di keranjang
+            DefaultTableModel model = (DefaultTableModel) jTable1.getModel();
+
+            int row = jTable1.getRowCount();
+            if (row > 0) {
+                //cek data
+                boolean ada = false;
+                int QTY = 0;
+                int baris = 0;
+                for (int i = 0; i < row; i++) {
+                    String TCode = jTable1.getValueAt(i, 0).toString();
+                    if (TCode.equals(kode)) {
+                        ada = true;
+                        QTY = Integer.parseInt(jTable1.getValueAt(i, 2).toString()) + 1;
+                        baris = i;
+                        break;
+                    }
+                }
+
+                if (ada) {
+                    //jika ditemukan di keranjang
+                    jTable1.setValueAt(QTY, baris, 2);
+                } else {
+                    //jika tidak ditemukan di keranjang
+                    Object[] produk = {
+                        P.getProduct_code(),
+                        P.getProduct_name(),
+                        1,
+                        P.getProduct_price_s()
+                    };
+                    model.addRow(produk);
+                }
+                jTextField1.setText("");
+                jTextField1.requestFocus();
+            } else {
+                Object[] produk = {
+                    P.getProduct_code(),
+                    P.getProduct_name(),
+                    1,
+                    P.getProduct_price_s()
+                };
+                model.addRow(produk);
+                jTextField1.setText("");
+                jTextField1.requestFocus();
+            }
+
+        }
+
+    }//GEN-LAST:event_jTextField1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -148,10 +201,45 @@ public class KasirPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
+
+    private Product searchByPCode(String kode) {
+        try {
+            Connection K = Koneksi.hubungkan();
+            Statement S = K.createStatement();
+            String Q = "SELECT * FROM products WHERE product_code='" + kode + "'";
+            ResultSet R = S.executeQuery(Q);
+            Product P = null;
+            while (R.next()) {
+                P = new Product();
+                int id = R.getInt(1);
+                String product_code = R.getString(2);
+                String product_name = R.getString(3);
+                String product_image = R.getString(4);
+                int product_category = R.getInt(5);
+                int product_supplier = R.getInt(6);
+                long product_price_s = R.getLong(7);
+                long product_price_b = R.getLong(8);
+                int product_stock = R.getInt(9);
+                P.setId(id);
+                P.setProduct_code(product_code);
+                P.setProduct_name(product_name);
+                P.setProduct_image(product_image);
+                P.setProduct_category(product_category);
+                P.setProduct_supplier(product_supplier);
+                P.setProduct_price_s(product_price_s);
+                P.setProduct_price_b(product_price_b);
+                P.setProduct_stock(product_stock);
+            }
+            return P;
+
+        } catch (SQLException e) {
+        }
+
+        return null;
+    }
 }
