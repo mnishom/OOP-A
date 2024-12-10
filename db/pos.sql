@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 03, 2024 at 04:28 AM
+-- Generation Time: Dec 10, 2024 at 04:43 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -50,7 +50,7 @@ INSERT INTO `products` (`id`, `product_code`, `product_name`, `product_image`, `
 (7, 'P00004', 'AC Daikin', 'C:\\Users\\LABKOM\\Pictures\\Save-as-icon.png', 1, 2, 3000000, 2500000, 15),
 (8, 'P00005', 'Mesin Cuci 2 tabung', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 6000000, 5000000, 50),
 (9, 'P00006', 'Printer 3D', 'C:\\Users\\LABKOM\\Pictures\\Capture.PNG', 1, 2, 5000000, 450000, 5),
-(10, 'P00007', 'Blender X', 'C:\\Users\\LABKOM\\Pictures\\bgsplash.PNG', 1, 2, 750000, 500000, 5),
+(10, '9983601475', 'Blender X', 'C:\\Users\\LABKOM\\Pictures\\bgsplash.PNG', 1, 2, 750000, 500000, 5),
 (11, '4970129727514', 'SNOWMAN', 'C:\\Users\\LABKOM\\Pictures\\Driver-Mongo.PNG', 1, 2, 7500, 5000, 50);
 
 -- --------------------------------------------------------
@@ -94,6 +94,48 @@ INSERT INTO `supplier` (`id`, `name`, `phone`, `address`) VALUES
 (1, 'AFFA COLLECTION', '08151222444', 'A'),
 (2, 'ElektronikQ', '081577744411', 'B'),
 (3, 'Sinar Jaya', '0816458545', 'Tegal');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction`
+--
+
+CREATE TABLE `transaction` (
+  `id` int(11) NOT NULL,
+  `tanggal` date NOT NULL,
+  `customer` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transaction`
+--
+
+INSERT INTO `transaction` (`id`, `tanggal`, `customer`) VALUES
+(1, '2024-12-10', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `transaction_detail`
+--
+
+CREATE TABLE `transaction_detail` (
+  `id` int(11) NOT NULL,
+  `id_transaction` int(11) NOT NULL,
+  `id_product` int(11) NOT NULL,
+  `qty` int(11) NOT NULL,
+  `transaction_date` date DEFAULT NULL,
+  `price` bigint(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `transaction_detail`
+--
+
+INSERT INTO `transaction_detail` (`id`, `id_transaction`, `id_product`, `qty`, `transaction_date`, `price`) VALUES
+(1, 1, 4, 2, '2024-12-10', 5000000),
+(2, 1, 5, 3, '2024-12-10', 7500000);
 
 -- --------------------------------------------------------
 
@@ -147,6 +189,18 @@ ALTER TABLE `supplier`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `transaction`
+--
+ALTER TABLE `transaction`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `transaction_detail`
+--
+ALTER TABLE `transaction_detail`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -173,6 +227,18 @@ ALTER TABLE `product_category`
 --
 ALTER TABLE `supplier`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `transaction`
+--
+ALTER TABLE `transaction`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `transaction_detail`
+--
+ALTER TABLE `transaction_detail`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

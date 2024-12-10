@@ -64,6 +64,12 @@ public class Login extends javax.swing.JFrame {
 
         jLabel1.setText("username");
         jPanel2.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(27, 31, -1, -1));
+
+        txtUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtUsernameActionPerformed(evt);
+            }
+        });
         jPanel2.add(txtUsername, new org.netbeans.lib.awtextra.AbsoluteConstraints(96, 28, 174, -1));
 
         jLabel2.setText("Passwoord");
@@ -81,13 +87,17 @@ public class Login extends javax.swing.JFrame {
 
         getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
-        setSize(new java.awt.Dimension(857, 654));
+        setSize(new java.awt.Dimension(838, 601));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnLoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoginActionPerformed
         LoginNow();
     }//GEN-LAST:event_btnLoginActionPerformed
+
+    private void txtUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtUsernameActionPerformed
 
     /**
      * @param args the command line arguments
